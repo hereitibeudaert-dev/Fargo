@@ -1,46 +1,14 @@
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+# Зависимости
+/node_modules
+/pubspec.lock  # Если используется Flutter
+/.packages     # Если используется Flutter
+/Pods/         # Если используется iOS (CocoaPods)
+/build/        # Результаты сборки
 
-body {
-  margin: 0;
-  background: #0f0f10;
-  color: #ffffff;
-}
+# Локальные файлы
+.DS_Store
+.idea/
+.vscode/
 
-.app {
-  padding: 24px;
-  text-align: center;
-}
-
-header h1 {
-  font-size: 28px;
-  margin-bottom: 4px;
-}
-
-header p {
-  font-size: 14px;
-  opacity: 0.6;
-}
-
-button {
-  margin-top: 32px;
-  padding: 14px 24px;
-  border-radius: 14px;
-  border: none;
-  background: #007aff;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:active {
-  transform: scale(0.97);
-}
-
-#status {
-  margin-top: 20px;
-  font-size: 14px;
-  opacity: 0.8;
-}
+# Конфигурация среды (скрыть чувствительные данные)
+*.env
