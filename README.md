@@ -1,55 +1,43 @@
-{
-  "name": "mobile-banking-app",
-  "version": "1.0.0",
-  "description": "Мобильное приложение для безопасного и удобного банкинга на React Native.",
-  "main": "index.js",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
-  },
-  "dependencies": {
-    "react": "18.2.0",
-    "react-native": "0.74.0",
-    "expo": "~51.0.0",
-    "expo-status-bar": "~1.12.1",
-    "expo-secure-store": "~13.0.1",      // Безопасное хранение токенов (аналог FlutterSecureStorage)
-    
-    // 🗺️ Навигация
-    "@react-navigation/native": "^6.1.17",
-    "@react-navigation/native-stack": "^6.9.26",
-    
-    // 🔄 Управление состоянием (пример использования Redux Toolkit)
-    "@reduxjs/toolkit": "^2.2.5",
-    "react-redux": "^9.1.2",
-    
-    // 🌐 HTTP-клиент
-    "axios": "^1.6.8",                   // Популярный клиент для API
-    
-    // 🎨 UI и стилизация
-    "react-native-safe-area-context": "4.10.1",
-    "react-native-screens": "3.31.1",
-    "react-native-vector-icons": "^10.0.3", // Иконки
-    
-    // 🗓️ Форматирование (для валют, дат)
-    "moment": "^2.30.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.20.0",
-    
-    // 🧪 Тестирование
-    "jest": "^29.2.1",
-    "jest-expo": "~51.0.1",
-    
-    // 🧹 Линтинг и форматирование
-    "@types/react": "~18.2.45",
-    "@types/react-native": "~0.73.0",
-    "typescript": "5.3.3",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react":
+import requests
+import os
+
+def download_file_sync(url, filename):
+    """Скачивает файл синхронно и сохраняет его."""
+    print(f"Начинается скачивание: {url}...")
+    try:
+        # Stream=True позволяет скачивать файл кусками, а не загружать весь в память
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status() # Вызывает исключение для плохих ответов (4xx или 5xx)
+            
+            # Получаем общий размер файла, если доступен
+            total_size = int(r.headers.get('content-length', 0))
+            
+            # Открываем файл для записи в бинарном режиме
+            with open(filename, 'wb') as f:
+                downloaded_size = 0
+                chunk_size = 8192 # Размер куска (8KB)
+                
+                for chunk in r.iter_content(chunk_size=chunk_size):
+                    # Отфильтровываем пустые куски
+                    if chunk:
+                        f.write(chunk)
+                        downloaded_size += len(chunk)
+                        
+                        # Отображение прогресса
+                        if total_size > 0:
+                            percent = (downloaded_size / total_size) * 100
+                            # \r возвращает курсор в начало строки для обновления
+                            print(f"\rПрогресс: {downloaded_size / (1024*1024):.2f} MB / {total_size / (1024*1024):.2f} MB ({percent:.1f}%)", end='')
+
+        print(f"\n✅ Скачивание завершено. Файл сохранен как: {filename}")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"\n❌ Ошибка скачивания: {e}")
+
+# --- Использование ---
+# URL большого файла для примера
+FILE_URL = "http://speedtest.tele2.net/100MB.zip" 
+OUTPUT_NAME = "100MB_test_file.zip"
+
+if __name__ == "__main__":
+    download_file_sync(FILE_URL, OUTPUT_NAME)
